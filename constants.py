@@ -1,1 +1,1 @@
-SUPPORTED_BANK_STATEMENTS = ["hsbc_one"]
+SUPPORTED_BANK_STATEMENTS = ["hsbc_one", "mox"]

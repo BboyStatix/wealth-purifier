@@ -26,9 +26,9 @@ statements = os.listdir(statementDir)
 interestEntries = []
 for statement in sorted(statements):
   statementPath = f'{statementDir}/{statement}'
-  scraper = InterestScraperFactory.getScraper("hsbc_one")(statement, statementPath)
+  scraper = InterestScraperFactory.getScraper(statementType)(statement, statementPath)
   entries = scraper.scrapeInterestEntries()
   interestEntries.extend(entries)
-
+print(interestEntries)
 totalInterest = sum([entry[1] for entry in interestEntries])
 print(f"Total Interest: {totalInterest}")
