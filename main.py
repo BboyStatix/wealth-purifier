@@ -18,9 +18,11 @@ def askForStatementDir():
   return directory
 
 # statementType = askForStatementType()
-statementType = "hsbc_one"
-statementDir = askForStatementDir()
-# statementDir = "./fixtures/HSBCOneStatements"
+statementType = "hsbc_statement_savings"
+# statementType = "hsbc_one"
+# statementDir = askForStatementDir()
+# statementDir = "./examples/HSBCOneStatements"
+statementDir = "./examples/HSBCStatementSavingsStatements"
 print("Calculating...")
 statements = os.listdir(statementDir)
 interestEntries = []

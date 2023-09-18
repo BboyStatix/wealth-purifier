@@ -2,6 +2,7 @@ import pdfplumber
 import re
 
 DATE_REGEX = "^[0-3]?[0-9] (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+INTEREST_REGEX = "CREDIT INTEREST"
 
 def extractPDFContent(pdf):
   pdfContent = ""
@@ -21,6 +22,8 @@ class HSBCOneInterestScraper:
     self.statement = statement
     with pdfplumber.open(statementPath) as pdf:
       self.pdfContent = extractPDFContent(pdf)
+      # with open(f"./generated/HSBCOne/{statement.split('.')[0]}.txt" , 'w') as f:
+      #   f.write(self.pdfContent)
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
@@ -34,7 +37,7 @@ class HSBCOneInterestScraper:
     raise Exception("No USD Exchange Rate found on PDF")
 
   def _getInterestAmount(self, sentence, isUSD):
-    (_, remainStr) = sentence.split("CREDIT INTEREST ")
+    (_, remainStr) = sentence.split(f"{INTEREST_REGEX} ")
     amount = float(remainStr.split(" ")[0])
     if isUSD:
       return amount * self._getUSDExchangeRate()
@@ -51,7 +54,7 @@ class HSBCOneInterestScraper:
       if date: dateOfCurrentEntry = date
       if re.search("Foreign Currency Savings", sentence) is not None: isUSDSection = True
 
-      if "CREDIT INTEREST" in sentence:
+      if INTEREST_REGEX in sentence:
         interestAmount = self._getInterestAmount(sentence, isUSDSection)
         print(f"{dateOfCurrentEntry}: {interestAmount}")
         interestEntries.append([dateOfCurrentEntry, interestAmount])

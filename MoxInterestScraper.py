@@ -22,8 +22,8 @@ class MoxInterestScraper:
     self.statement = statement
     with pdfplumber.open(statementPath) as pdf:
       self.pdfContent = extractPDFContent(pdf)
-      with open(f"./generated/Mox/{statement.split('.')[0]}.txt" , 'w') as f:
-        f.write(self.pdfContent)
+      # with open(f"./generated/Mox/{statement.split('.')[0]}.txt" , 'w') as f:
+      #   f.write(self.pdfContent)
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
