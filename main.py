@@ -1,6 +1,14 @@
 import os
+import csv
 import InterestScraperFactory
 from constants import SUPPORTED_BANK_STATEMENTS
+
+def generateCSV(interestEntries, statementType):
+  with open(f'./generated/{statementType}.csv', 'w') as f:
+    writer = csv.writer(f)
+    writer.writerow(["Date", "Interest"])
+    for row in interestEntries:
+      writer.writerow(row)
 
 def askForStatementType():
   print("What type of bank statement? Pick an option:")
@@ -31,6 +39,6 @@ for statement in sorted(statements):
   scraper = InterestScraperFactory.getScraper(statementType)(statement, statementPath)
   entries = scraper.scrapeInterestEntries()
   interestEntries.extend(entries)
-print(interestEntries)
+generateCSV(interestEntries, statementType)
 totalInterest = sum([entry[1] for entry in interestEntries])
 print(f"Total Interest: {totalInterest}")
