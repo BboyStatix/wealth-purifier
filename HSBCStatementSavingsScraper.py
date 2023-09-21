@@ -1,5 +1,6 @@
 import pdfplumber
 import re
+from datetime import datetime
 
 DATE_REGEX = r"^[0-3]?[0-9]-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
 INTEREST_REGEX = "CREDITINTEREST"
@@ -13,7 +14,8 @@ def extractPDFContent(pdf):
 def getDateFromSentence(sentence):
   match = re.search(DATE_REGEX, sentence)
   if match is not None:
-    date = match.group(0)
+    dateStr = match.group(0)
+    date = datetime.strptime(dateStr, "%d-%b").strftime("%d %b")
     return date
   
 class HSBCStatementSavingsScraper:
