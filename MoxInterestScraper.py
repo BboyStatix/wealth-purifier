@@ -1,5 +1,6 @@
 import pdfplumber
 import re
+from datetime import datetime
 
 DATE_REGEX = r"^[0-3]?[0-9] (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
 INTEREST_REGEX = r"^.*Interest 利息 \+"
@@ -16,14 +17,23 @@ def getDateFromSentence(sentence):
   if match is not None:
     date = match.group(0)
     return date
+
+def extractDate(statement):
+  match = re.search(r'[A-Za-z]{3}(\d{4})', statement)
+  if match:
+    return datetime.strptime(match.group(0), '%b%Y')
+  else:
+      return 0
   
 class MoxInterestScraper:
   def __init__(self, statement, statementPath):
     self.statement = statement
     with pdfplumber.open(statementPath) as pdf:
       self.pdfContent = extractPDFContent(pdf)
-      # with open(f"./generated/Mox/{statement.split('.')[0]}.txt" , 'w') as f:
-      #   f.write(self.pdfContent)
+
+  @staticmethod
+  def sortStatements(statements):
+    return sorted(statements, key=extractDate)
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
