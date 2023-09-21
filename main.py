@@ -30,13 +30,14 @@ statementType = "hsbc_statement_savings"
 # statementType = "hsbc_one"
 # statementDir = askForStatementDir()
 # statementDir = "./examples/HSBCOneStatements"
-statementDir = "./examples/HSBCStatementSavingsStatements"
-print("Calculating...")
+print("Calculating Interest...")
 statements = os.listdir(statementDir)
 interestEntries = []
-for statement in sorted(statements):
+Scraper = InterestScraperFactory.getScraper(statementType)
+sortedStatements = Scraper.sortStatements(statements)
+for statement in sortedStatements:
   statementPath = f'{statementDir}/{statement}'
-  scraper = InterestScraperFactory.getScraper(statementType)(statement, statementPath)
+  scraper = Scraper(statement, statementPath)
   entries = scraper.scrapeInterestEntries()
   interestEntries.extend(entries)
 generateCSV(interestEntries, statementType)
