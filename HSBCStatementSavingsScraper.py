@@ -21,8 +21,10 @@ class HSBCStatementSavingsScraper:
     self.statement = statement
     with pdfplumber.open(statementPath) as pdf:
       self.pdfContent = extractPDFContent(pdf)
-      # with open(f"./generated/HSBCStatementSavings/{statement.split('.')[0]}.txt" , 'w') as f:
-      #   f.write(self.pdfContent)
+  
+  @staticmethod
+  def sortStatements(statements):
+    return sorted(statements)
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
@@ -47,16 +49,3 @@ class HSBCStatementSavingsScraper:
         print(f"{dateOfCurrentEntry}: {interestAmount}")
         interestEntries.append([dateOfCurrentEntry, interestAmount])
     return interestEntries
-
-
-
-
-
-    #   isInterestSentenceMatch = re.search(INTEREST_REGEX, sentence)
-    #   if isInterestSentenceMatch:
-    #     date = f"{getDateFromSentence(sentence)} {statementYear}" 
-    #     matchGroup = isInterestSentenceMatch.group(0)
-    #     (_, amount) = sentence.split(matchGroup)
-    #     print(f"{date}: {amount}")
-    #     interestEntries.append([date, float(amount)])
-    # return interestEntries

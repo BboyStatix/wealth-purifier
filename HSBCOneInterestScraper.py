@@ -22,8 +22,10 @@ class HSBCOneInterestScraper:
     self.statement = statement
     with pdfplumber.open(statementPath) as pdf:
       self.pdfContent = extractPDFContent(pdf)
-      # with open(f"./generated/HSBCOne/{statement.split('.')[0]}.txt" , 'w') as f:
-      #   f.write(self.pdfContent)
+  
+  @staticmethod
+  def sortStatements(statements):
+    return sorted(statements)
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
