@@ -15,8 +15,7 @@ def getDateFromSentence(sentence):
   match = re.search(DATE_REGEX, sentence)
   if match is not None:
     dateStr = match.group(0)
-    date = datetime.strptime(dateStr, "%d-%b").strftime("%d %b")
-    return date
+    return datetime.strptime(dateStr, "%d-%b")
   
 class HSBCStatementSavingsScraper:
   def __init__(self, statement, statementPath):
@@ -28,11 +27,20 @@ class HSBCStatementSavingsScraper:
   def sortStatements(statements):
     return sorted(statements)
   
+  def _getFullDateOfCurrentEntry(self, date):
+    isJanuaryStatement = self._getStatementDate().month == 1
+    isDecemberEntry = date.month == 12
+    yearOfEntry = self._getStatementDate().year
+    # if we have a January statement, the december entries inside should be currentStatement year - 1
+    if isJanuaryStatement and isDecemberEntry:
+      yearOfEntry = yearOfEntry - 1
+    return f"{date.strftime('%d %b')} {yearOfEntry}"
+  
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
-
-  def _getStatementYear(self):
-    return self.statement[:4]
+  
+  def _getStatementDate(self):
+    return datetime.strptime(self.statement.split('_')[0], "%Y-%m-%d")
   
   def _getInterestAmount(self, sentence):
     (_, remainStr) = sentence.split(f"{INTEREST_REGEX} ")
@@ -42,12 +50,12 @@ class HSBCStatementSavingsScraper:
     sentences = self._getPdfSentences()
     interestEntries = []
     dateOfCurrentEntry = ""
-    statementYear = self._getStatementYear() 
     for sentence in sentences:
       date = getDateFromSentence(sentence)
-      if date: dateOfCurrentEntry = f"{date} {statementYear}" 
+      if date: dateOfCurrentEntry = date
       if INTEREST_REGEX in sentence:
+        fullDate = self._getFullDateOfCurrentEntry(dateOfCurrentEntry)
         interestAmount = self._getInterestAmount(sentence)
-        print(f"{dateOfCurrentEntry}: {interestAmount}")
-        interestEntries.append([dateOfCurrentEntry, interestAmount])
+        print(f"{fullDate}: {interestAmount}")
+        interestEntries.append([fullDate, interestAmount])
     return interestEntries
