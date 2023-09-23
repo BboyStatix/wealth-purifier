@@ -1,7 +1,8 @@
 import pdfplumber
 import re
+from datetime import datetime
 
-DATE_REGEX = "^[0-3]?[0-9] (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
+DATE_REGEX = r"^[0-3]?[0-9] (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
 INTEREST_REGEX = "CREDIT INTEREST"
 
 def extractPDFContent(pdf):
@@ -13,8 +14,8 @@ def extractPDFContent(pdf):
 def getDateFromSentence(sentence):
   match = re.search(DATE_REGEX, sentence)
   if match is not None:
-    date = match.group(0)
-    return date
+    dateStr = match.group(0)
+    return datetime.strptime(dateStr, "%d %b")
   
 
 class HSBCOneInterestScraper:
@@ -26,6 +27,18 @@ class HSBCOneInterestScraper:
   @staticmethod
   def sortStatements(statements):
     return sorted(statements)
+
+  def _getFullDateOfCurrentEntry(self, date):
+    isJanuaryStatement = self._getStatementDate().month == 1
+    isDecemberEntry = date.month == 12
+    yearOfEntry = self._getStatementDate().year
+    # if we have a January statement, the december entries inside should be currentStatement year - 1
+    if isJanuaryStatement and isDecemberEntry:
+      yearOfEntry = yearOfEntry - 1
+    return f"{date.strftime('%d %b')} {yearOfEntry}"
+
+  def _getStatementDate(self):
+    return datetime.strptime(self.statement.split('_')[0], "%Y-%m-%d")
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
@@ -49,15 +62,15 @@ class HSBCOneInterestScraper:
   def scrapeInterestEntries(self):
     sentences = self._getPdfSentences()
     isUSDSection = False
-    dateOfCurrentEntry = ""
     interestEntries = []
+    dateOfCurrentEntry = ""
     for sentence in sentences:
       date = getDateFromSentence(sentence)
       if date: dateOfCurrentEntry = date
       if re.search("Foreign Currency Savings", sentence) is not None: isUSDSection = True
-
       if INTEREST_REGEX in sentence:
+        fullDate = self._getFullDateOfCurrentEntry(dateOfCurrentEntry)
         interestAmount = self._getInterestAmount(sentence, isUSDSection)
-        print(f"{dateOfCurrentEntry}: {interestAmount}")
+        print(f"{fullDate}: {interestAmount}")
         interestEntries.append([dateOfCurrentEntry, interestAmount])
     return interestEntries
