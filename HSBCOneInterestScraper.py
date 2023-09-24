@@ -72,5 +72,5 @@ class HSBCOneInterestScraper:
         fullDate = self._getFullDateOfCurrentEntry(dateOfCurrentEntry)
         interestAmount = self._getInterestAmount(sentence, isUSDSection)
         print(f"{fullDate}: {interestAmount}")
-        interestEntries.append([dateOfCurrentEntry, interestAmount])
+        interestEntries.append([fullDate, interestAmount])
     return interestEntries
