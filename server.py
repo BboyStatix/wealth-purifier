@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-  return send_from_directory('.', 'index.html')
+  return send_from_directory('public', 'index.html')
 
 @app.route('/report/generate', methods=['POST'])
 def generate_interest_report():
