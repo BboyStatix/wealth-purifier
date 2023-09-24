@@ -1,6 +1,7 @@
 import pdfplumber
 import re
 from datetime import datetime
+import io
 
 DATE_REGEX = r"^[0-3]?[0-9] (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
 INTEREST_REGEX = r"^.*Interest 利息 \+"
@@ -26,9 +27,9 @@ def extractDate(statement):
       return 0
   
 class MoxInterestScraper:
-  def __init__(self, statement, statementPath):
+  def __init__(self, statement, statementData):
     self.statement = statement
-    with pdfplumber.open(statementPath) as pdf:
+    with pdfplumber.open(io.BytesIO(statementData)) as pdf:
       self.pdfContent = extractPDFContent(pdf)
 
   @staticmethod
