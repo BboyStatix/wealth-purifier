@@ -32,8 +32,8 @@ class MoxInterestScraper:
       self.pdfContent = extractPDFContent(pdf)
 
   @staticmethod
-  def sortStatements(statements):
-    return sorted(statements, key=extractDate)
+  def statementSorter(statementName):
+    return extractDate(statementName)
   
   def _getPdfSentences(self):
     return self.pdfContent.split("\n")
