@@ -1,7 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, send_from_directory, jsonify
 from services import ExtractInterestService
 
 app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def index():
+  return send_from_directory('.', 'index.html')
 
 @app.route('/report/generate', methods=['POST'])
 def generate_interest_report():
