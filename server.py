@@ -18,4 +18,4 @@ def generate_interest_report():
   return jsonify(interestEntries=interestEntries, total=totalInterest)
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=3000, debug=True)
+    app.run(host='localhost', port=3000)
