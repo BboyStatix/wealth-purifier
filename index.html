@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wealth Purifier</title>
+</head>
+<body>
+  <form onsubmit="uploadFiles(event)">
+    <div>
+      <label for="statementType">Statement Type</label>
+      <select id="statementType" name="statementType">
+        <option value="hsbc_one">HSBC One</option>
+        <option value="hsbc_statement_savings">HSBC Statement Savings</option>
+        <option value="mox">Mox</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="statements">Attach your bank statements:</label>
+      <input type="file" id="statements" name="statements" multiple>
+    </div>
+
+    <button type="submit">Calculate Interest</button>
+  </form>
+  <div id="loadingMessage" style="display: none;">Generating report...</div>
+
+  <div id="report"></div>
+
+  <script>
+    function resetReport() {
+      reportSection = document.getElementById('report')
+      reportSection.innerHTML = ""
+    }
+
+    function displayGeneratedReport({interestEntries, total}) {
+      for([date, interestAmount] of interestEntries) {
+        const div = document.createElement('div')
+        div.textContent = `${date}: ${interestAmount}`
+        reportSection.appendChild(div)
+      }
+      const totalDiv = document.createElement('div')
+      totalDiv.textContent = `Total: ${total}`
+      reportSection.appendChild(totalDiv)
+    }
+
+    function setLoadingMessage(display) {
+      const loadingMessage = document.getElementById('loadingMessage')
+      if(display) {
+        loadingMessage.style.display = 'block'
+      } else {
+        loadingMessage.style.display = 'none'
+      }
+    }
+
+    function uploadFiles(e) {
+      e.preventDefault();
+
+      var statementTypeInput = document.getElementById('statementType').value;
+      var statementsInput = document.getElementById('statements');
+  
+      var formData = new FormData();
+      for (file of statementsInput.files) {
+        formData.append('files', file);
+      }
+      formData.append('statementType', statementTypeInput);
+
+      setLoadingMessage(true)
+      resetReport()
+      fetch('http://localhost:3000/report/generate', {
+        method: 'POST',
+        body: formData
+      })
+      .then(function(response) {
+        if (response.ok) return response.json()
+        throw new Error("Failed to submit!")
+      })
+      .then(displayGeneratedReport)
+      .catch(function(error) {
+          console.log('Error:', error);
+          alert('An error occurred.');
+      })
+      .finally(() => {
+        setLoadingMessage(false)
+      })
+    }
+  </script>
+</body>
+</html>
