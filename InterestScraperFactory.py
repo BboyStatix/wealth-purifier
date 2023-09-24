@@ -1,6 +1,6 @@
-from HSBCOneInterestScraper import HSBCOneInterestScraper
-from MoxInterestScraper import MoxInterestScraper
-from HSBCStatementSavingsScraper import HSBCStatementSavingsScraper
+from scrapers.HSBCOneInterestScraper import HSBCOneInterestScraper
+from scrapers.MoxInterestScraper import MoxInterestScraper
+from scrapers.HSBCStatementSavingsScraper import HSBCStatementSavingsScraper
 
 def getScraper(bankType):
   match bankType:
