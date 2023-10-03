@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
-from services import ExtractInterestService
 import os
 import sys
 module_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(module_path)
+
+from flask import Flask, request, jsonify
+from services import ExtractInterestService
 
 app = Flask(__name__)
 
