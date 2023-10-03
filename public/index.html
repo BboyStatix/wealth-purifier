@@ -67,7 +67,7 @@
 
       setLoadingMessage(true)
       resetReport()
-      fetch('http://localhost:3000/report/generate', {
+      fetch('https://wealth-purifier.vercel.app/report/generate', {
         method: 'POST',
         body: formData
       })
