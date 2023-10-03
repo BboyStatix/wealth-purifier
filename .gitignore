@@ -3,3 +3,4 @@ __pycache__
 examples
 generated
 .env
+.vercel
