@@ -16,4 +16,4 @@ def generate_interest_report():
   interestEntries = ExtractInterestService.extract_interest(statement_type, statements)
   totalInterest = sum([entry[1] for entry in interestEntries])
   print(f"Total Interest: {totalInterest}")
-  return jsonify(interestEntries=interestEntries, total=totalInterest)
+  return jsonify(interestEntries)

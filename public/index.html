@@ -28,16 +28,25 @@
   <div id="report"></div>
 
   <script>
+    const GENERATE_REPORT_URL = "https://wealth-purifier.vercel.app/report/generate"
+    const SERVERLESS_FN_FILE_LIMIT = 5
+
+    reportSection = document.getElementById('report')
+    const loadingMessage = document.getElementById('loadingMessage')
+    const statementTypeInput = document.getElementById('statementType').value;
+    const statementsInput = document.getElementById('statements');
+
     function resetReport() {
-      reportSection = document.getElementById('report')
       reportSection.innerHTML = ""
     }
 
-    function displayGeneratedReport({interestEntries, total}) {
+    function displayGeneratedReport(interestEntries) {
+      let total = 0
       for([date, interestAmount] of interestEntries) {
         const div = document.createElement('div')
         div.textContent = `${date}: ${interestAmount}`
         reportSection.appendChild(div)
+        total += interestAmount
       }
       const totalDiv = document.createElement('div')
       totalDiv.textContent = `Total: ${total}`
@@ -45,7 +54,6 @@
     }
 
     function setLoadingMessage(display) {
-      const loadingMessage = document.getElementById('loadingMessage')
       if(display) {
         loadingMessage.style.display = 'block'
       } else {
@@ -53,21 +61,14 @@
       }
     }
 
-    function uploadFiles(e) {
-      e.preventDefault();
-
-      var statementTypeInput = document.getElementById('statementType').value;
-      var statementsInput = document.getElementById('statements');
-  
+    async function generateReport(files) {
       var formData = new FormData();
-      for (file of statementsInput.files) {
+      for (file of files) {
         formData.append('files', file);
       }
       formData.append('statementType', statementTypeInput);
 
-      setLoadingMessage(true)
-      resetReport()
-      fetch('https://wealth-purifier.vercel.app/report/generate', {
+      return fetch(GENERATE_REPORT_URL, {
         method: 'POST',
         body: formData
       })
@@ -75,14 +76,31 @@
         if (response.ok) return response.json()
         throw new Error("Failed to submit!")
       })
-      .then(displayGeneratedReport)
       .catch(function(error) {
-          console.log('Error:', error);
-          alert('An error occurred.');
+        console.log('Error:', error);
+        alert('An error occurred.');
       })
-      .finally(() => {
-        setLoadingMessage(false)
-      })
+    }
+
+    async function uploadFiles(e) {
+      e.preventDefault();
+
+      resetReport()
+      setLoadingMessage(true)
+
+      numOfElemsToSlice = SERVERLESS_FN_FILE_LIMIT
+      files = Object.values(statementsInput.files)
+      const generateReportPromises = []
+      for (let startIdx = 0; startIdx < files.length; startIdx += numOfElemsToSlice) {
+        const slicedFiles = files.slice(startIdx, startIdx + numOfElemsToSlice)
+        const generateReportPromise = generateReport(slicedFiles)
+        generateReportPromises.push(generateReportPromise)
+      }
+      const responses = await Promise.all(generateReportPromises)
+      const interestEntries = responses.flat()
+      displayGeneratedReport(interestEntries)
+
+      setLoadingMessage(false)
     }
   </script>
 </body>
