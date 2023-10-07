@@ -47,24 +47,62 @@
     </tbody>
   </table>
 
+  <div id="download-csv-btn" style="display: none;margin-top: 8px;">
+    <button 
+      type="button" 
+      onclick="downloadCSV()"
+    >
+      Download as CSV
+    </button>
+  </div>
+
   <script>
     const GENERATE_REPORT_URL = "https://wealth-purifier.vercel.app/report/generate"
     const SERVERLESS_FN_FILE_LIMIT = 5
 
     const reportSection = document.getElementById('report')
     const tbody = reportSection.getElementsByTagName('tbody')[0]
+    const downloadCSVButton = document.getElementById('download-csv-btn')
 
     const loadingMessage = document.getElementById('loadingMessage')
     const statementTypeInput = document.getElementById('statementType');
     const statementsInput = document.getElementById('statements');
 
+    let interestEntries = []
+
+    function convertToCSV() {
+      const rows = [];
+      rows.push(['Date', 'Amount'])
+      for (let i = 0; i < interestEntries.length; i++) {
+        rows.push(interestEntries[i].join(','));
+      }
+      return rows.join('\n');
+    }
+
+    function downloadCSV() {
+      const csvContent = convertToCSV();
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', "test.csv");
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     function resetReport() {
+      interestEntries = []
       reportSection.style.display = "none"
+      downloadCSVButton.style.display = "none"
       tbody.innerHTML = ''
     }
 
     function displayGeneratedReport(interestEntries) {
       reportSection.style.display = "inline-block"
+      downloadCSVButton.style.display = 'block'
 
       let total = 0
       for([date, interestAmount] of interestEntries) {
@@ -140,7 +178,7 @@
       files = Object.values(statementsInput.files)
       const inBatchesOfN = batched({ batchSize: SERVERLESS_FN_FILE_LIMIT, items: files })
       const responses = await Promise.all(inBatchesOfN(submitFiles))
-      const interestEntries = responses.flat()
+      interestEntries = responses.flat()
       displayGeneratedReport(interestEntries)
 
       setLoadingMessage(false)
