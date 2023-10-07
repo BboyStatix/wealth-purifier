@@ -7,7 +7,7 @@
 </head>
 <body style="text-align: center;">
   <h2>Wealth Purifier</h2>
-  <form onsubmit="uploadFiles(event)">
+  <form onsubmit="calculateInterest(event)">
     <div>
       <label for="statementType">Statement Type</label>
       <select id="statementType" name="statementType">
@@ -26,9 +26,9 @@
       <button type="submit">Calculate Interest</button>
     </div>
   </form>
-  <div id="loadingMessage" style="display: none;">Generating report...</div>
+  <div id="loadingMessage" style="display: none;margin-top: 12px;">Generating report...</div>
 
-  <div id="report"></div>
+  <div id="report" style="margin-top: 12px;"></div>
 
   <script>
     const GENERATE_REPORT_URL = "https://wealth-purifier.vercel.app/report/generate"
@@ -64,7 +64,7 @@
       }
     }
 
-    async function generateReport(files) {
+    async function submitFiles(files) {
       var formData = new FormData();
       for (file of files) {
         formData.append('files', file);
@@ -85,21 +85,24 @@
       })
     }
 
-    async function uploadFiles(e) {
+    const batched = ({batchSize, items}) => cb => {
+      const promises = []
+      for (let startIdx = 0; startIdx < items.length; startIdx += batchSize) {
+        const currentBatchOfItems = items.slice(startIdx, startIdx + batchSize)
+        promises.push(cb(currentBatchOfItems))
+      }
+      return promises
+    }
+
+    async function calculateInterest(e) {
       e.preventDefault();
 
       resetReport()
       setLoadingMessage(true)
 
-      numOfElemsToSlice = SERVERLESS_FN_FILE_LIMIT
       files = Object.values(statementsInput.files)
-      const generateReportPromises = []
-      for (let startIdx = 0; startIdx < files.length; startIdx += numOfElemsToSlice) {
-        const slicedFiles = files.slice(startIdx, startIdx + numOfElemsToSlice)
-        const generateReportPromise = generateReport(slicedFiles)
-        generateReportPromises.push(generateReportPromise)
-      }
-      const responses = await Promise.all(generateReportPromises)
+      const inBatchesOfN = batched({ batchSize: SERVERLESS_FN_FILE_LIMIT, items: files })
+      const responses = await Promise.all(inBatchesOfN(submitFiles))
       const interestEntries = responses.flat()
       displayGeneratedReport(interestEntries)
 
