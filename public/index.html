@@ -179,7 +179,9 @@
       files = Object.values(statementsInput.files)
       const inBatchesOfN = batched({ batchSize: SERVERLESS_FN_FILE_LIMIT, items: files })
       const responses = await Promise.all(inBatchesOfN(submitFiles))
-      interestEntries = responses.flat()
+      interestEntries = responses.flat().sort((a,b) => {
+        return new Date(a[0]) - new Date(b[0])
+      })
       displayGeneratedReport(interestEntries)
 
       setLoadingMessage(false)
