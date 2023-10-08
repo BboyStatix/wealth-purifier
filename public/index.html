@@ -4,6 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wealth Purifier</title>
+  <style>
+    #drop-area {
+      width: 300px;
+      /* height: 200px; */
+      border: 2px dashed #ccc;
+      border-radius: 5px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 20px auto;
+      position: relative;
+    }
+
+    #drop-area.highlight {
+      background-color: #F7F7F7;
+    }
+
+    #drop-area p {
+      margin: 75px auto;
+      padding: 0px 2px;
+    }
+
+    #file-input {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+    }
+
+    #file-input-label {
+      display: inline-block;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body style="text-align: center;">
   <h2>Wealth Purifier</h2>
@@ -17,9 +54,9 @@
       </select>
     </div>
 
-    <div style="margin-top: 12px;">
-      <label for="statements">Attach your bank statements:</label>
-      <input type="file" id="statements" name="statements" multiple>
+    <div id="drop-area">
+      <p>Drag and drop your bank statements here or click to select files</p>
+      <input type="file" id="file-input" name="statements" multiple>
     </div>
 
     <div style="margin-top: 12px;">
@@ -69,6 +106,7 @@
     const statementsInput = document.getElementById('statements');
 
     let interestEntries = []
+    let files = [];
 
     function convertToCSV() {
       const rows = [];
@@ -176,7 +214,6 @@
       resetReport()
       setLoadingMessage(true)
 
-      files = Object.values(statementsInput.files)
       const inBatchesOfN = batched({ batchSize: SERVERLESS_FN_FILE_LIMIT, items: files })
       const responses = await Promise.all(inBatchesOfN(submitFiles))
       interestEntries = responses.flat().sort((a,b) => {
@@ -185,6 +222,71 @@
       displayGeneratedReport(interestEntries)
 
       setLoadingMessage(false)
+    }
+
+    var dropArea = document.getElementById('drop-area');
+    var fileInput = document.getElementById('file-input');
+    var fileInputLabel = document.getElementById('file-input-label');
+    var submitButton = document.getElementById('submit-btn');
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    // Highlight drop area when a file is dragged over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    // Unhighlight drop area when a file is dragged out of it
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    // Handle selected files
+    fileInput.addEventListener('change', handleSelectedFiles, false);
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function highlight() {
+      dropArea.classList.add('highlight');
+    }
+
+    function unhighlight() {
+      dropArea.classList.remove('highlight');
+    }
+
+    function handleDrop(e) {
+      var dt = e.dataTransfer;
+      var newFiles = Array.from(dt.files);
+      files = files.concat(newFiles);
+      updateFileList();
+    }
+
+    function handleSelectedFiles(e) {
+      var newFiles = Array.from(e.target.files);
+      files = files.concat(newFiles);
+      updateFileList();
+    }
+
+    function updateFileList() {
+      var fileList = document.createElement('ul');
+      files.forEach(function(file) {
+        var listItem = document.createElement('li');
+        listItem.textContent = file.name;
+        fileList.appendChild(listItem);
+      });
+
+      dropArea.innerHTML = '';
+      dropArea.appendChild(fileList);
     }
   </script>
 </body>
