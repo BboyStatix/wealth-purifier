@@ -214,6 +214,7 @@
 
     async function calculateInterest(e) {
       e.preventDefault();
+      if(files.length === 0) return
 
       resetReport()
       setLoadingMessage(true)
