@@ -36,7 +36,7 @@ Application currently supports the following bank statements
 For HSBC One I currently only support HKD and USD. Feel free to create an issue on this repo if you want other foreign currencies supported. Or you could either extend an existing scraper or write your own.
 
 ## Adding your own Scraper
-This project utilises the strategy pattern to encapsulate scraping logic for different types of bank statements.
+This project makes use of scrapers to encapsulate scraping logic for different types of bank statements.
 
 You can write your own scraper if your bank statement type isn't supported.
 It has to implement the following interface
