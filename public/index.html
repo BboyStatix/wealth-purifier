@@ -198,8 +198,7 @@
         throw new Error("Failed to submit!")
       })
       .catch(function(error) {
-        console.log('Error:', error);
-        alert('An error occurred.');
+        console.error(error);
       })
     }
 
