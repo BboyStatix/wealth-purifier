@@ -25,10 +25,6 @@ class HSBCOneInterestScraper:
     with pdfplumber.open(io.BytesIO(statementData)) as pdf:
       self.pdfContent = extractPDFContent(pdf)
 
-  @staticmethod
-  def statementSorter(statementName):
-    return statementName
-
   def _getFullDateOfCurrentEntry(self, date):
     isJanuaryStatement = self._getStatementDate().month == 1
     isDecemberEntry = date.month == 12

@@ -42,12 +42,7 @@ You can write your own scraper if your bank statement type isn't supported.
 It has to implement the following interface
 ```
 class Scraper:
-  @staticmethod
-  def statementSorter(statementName):
-
   def scrapeInterestEntries(self):
 ```
-
-`statementSorter` should return a sorting function that uses the filenames of the bank statements to sort in ascending order.
 
 `scrapeInterestEntries` should return an array of arrays in the format of `[ ['28 Jul 2021', 0.01], ... ]`
