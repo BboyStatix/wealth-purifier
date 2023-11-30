@@ -31,7 +31,7 @@ Application currently supports the following bank statements
 - Mox Bank
 - HSBC Statement Savings (this is a relatively old bank account which is no longer issued nowadays)
 
-For HSBC One I currently only support HKD and USD. Also you have to download the statements on desktop instead of the HSBC mobile App because the filename format is different. Feel free to create an issue on this repo if you want other foreign currencies supported. Or you could either extend an existing scraper or write your own.
+For HSBC One I currently only support HKD and USD. Feel free to create an issue on this repo if you want other foreign currencies supported. Or you could contribute to this repo by extending an existing scraper or write your own.
 
 ## Adding your own Scraper
 This project makes use of scrapers to encapsulate scraping logic for different types of bank statements.
