@@ -53,6 +53,6 @@ class HSBCStatementSavingsScraper:
       if INTEREST_REGEX in sentence:
         fullDate = self._getFullDateOfCurrentEntry(dateOfCurrentEntry)
         interestAmount = self._getInterestAmount(sentence)
-        print(f"{fullDate}: {interestAmount}")
+        # print(f"{fullDate}: {interestAmount}")
         interestEntries.append([fullDate, interestAmount])
     return interestEntries

@@ -50,6 +50,6 @@ class MoxInterestScraper:
         date = f"{getDateFromSentence(sentence)} {statementYear}" 
         matchGroup = isInterestSentenceMatch.group(0)
         (_, amount) = sentence.split(matchGroup)
-        print(f"{date}: {amount}")
+        # print(f"{date}: {amount}")
         interestEntries.append([date, float(amount)])
     return interestEntries

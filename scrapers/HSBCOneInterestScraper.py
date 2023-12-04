@@ -95,6 +95,6 @@ class HSBCOneInterestScraper:
       if re.search(INTEREST_REGEX, sentence) is not None:
         fullDate = self._getFullDateOfCurrentEntry(dateOfCurrentEntry)
         interestAmount = self._getInterestAmount(sentence, isUSDSection)
-        print(f"{fullDate}: {interestAmount}")
+        # print(f"{fullDate}: {interestAmount}")
         interestEntries.append([fullDate, interestAmount])
     return interestEntries
