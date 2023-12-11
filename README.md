@@ -5,7 +5,7 @@
 
 ![Wealth Purifier demo video](wealth-purifier-demo.gif)
 
-Riba has become a ubiquitous part of our modern economic system. The fact that a medium of exchange (money) can itself be commodified has led some like Aristotle to call it "the birth of money from money". 
+Riba has become a ubiquitous part of our modern economic system. The fact that a medium of exchange (money) can at the same time be a commodity to be exchanged has led some like Aristotle to call it the _"birth of money from money" - (Politics, I, 10, 1258b)_.
 
 Instead of having to take investment risks, one has the option of simply sitting back and making money off money itself. In sharp contrast with profit-sharing and risk-sharing models, riba contracts put all the burden on the borrower with little to no downsides to the lender. With how prevalent this has become in this day and age, the best of us find ourselves yet afflicted by its dust. 
 
