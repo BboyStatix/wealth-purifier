@@ -23,7 +23,7 @@ The best solution obviously is to simply move everything to a current account. W
 ## Technology
 This project makes use of simple HTML, CSS, JavaScript for the frontend. Backend is a simple serverless function written in Python + Flask and deployed on Vercel.
 
-By default, the hobby plan of Vercel has a serverless function upload size limit of 4.5MB and a timeout of 10s. To get around this limitation, I opted to batch files in groups of 5 and make multiple serverless function calls in parallel.
+By default, the hobby plan of Vercel has a serverless function upload size limit of 4.5MB and a timeout of 10s. To get around this limitation, I opted to batch files in groups of n and make multiple serverless function calls in parallel.
 
 ## Supported bank statements
 Application currently supports the following bank statements
