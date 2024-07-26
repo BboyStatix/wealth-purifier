@@ -26,7 +26,7 @@ This project makes use of simple HTML, CSS, JavaScript for the frontend. Backend
 By default, the hobby plan of Vercel has a serverless function upload size limit of 4.5MB and a timeout of 10s. To get around this limitation, I opted to batch files in groups of n and make multiple serverless function calls in parallel.
 
 ## Supported bank statements
-Application currently supports the following bank statements
+Application currently supports the following bank statements. For some statements only the statement downloaded via the website (as opposed to the app) is supported.
 - HSBC One(HKD, USD)
 - Mox Bank
 - HSBC Statement Savings (this is a relatively old bank account which is no longer issued nowadays)
